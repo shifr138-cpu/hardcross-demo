@@ -861,8 +861,6 @@ dialog.lb[open] img{animation:lbIn .5s var(--ease)}
 
 /* полоса прогресса прокрутки по нижнему краю шапки */
 .hd .wrap{position:relative}
-.hd .wrap::after{content:"";position:absolute;left:28px;right:28px;bottom:-1px;height:2px;border-radius:2px;background:var(--teal-l);transform:scaleX(0);transform-origin:left;pointer-events:none}
-@supports (animation-timeline:scroll()){.hd .wrap::after{animation:prog linear both;animation-timeline:scroll(root)}}
 @keyframes prog{to{transform:scaleX(1)}}
 
 /* отклик на нажатие */
@@ -1182,6 +1180,10 @@ a.map-s:hover>img{transform:scale(1.03)}
 /* автозаполнение браузера: без светло-голубой заливки, подпись уходит наверх и при подсказке */
 .fld input:-webkit-autofill,.fld input:-webkit-autofill:hover,.fld input:-webkit-autofill:focus{-webkit-text-fill-color:var(--text);caret-color:var(--teal-l);-webkit-box-shadow:0 0 0 100px #1d1f22 inset;box-shadow:0 0 0 100px #1d1f22 inset;transition:background-color 9999s ease-out 0s}
 .fld input:-webkit-autofill+span,.fld input:autofill+span{top:9px;font-size:12px}
+/* ===== v12q: плавнее ===== */
+.menu.instant{transition:none!important}
+.page.on{animation:pgf .35s ease-out both}
+@keyframes pgf{from{opacity:0}}
 </style>
 </head>
 <body>
@@ -1487,12 +1489,12 @@ a.map-s:hover>img{transform:scale(1.03)}
       <div class="wrap faq-wrap">
         <h2 class="h2">Частые вопросы</h2>
         <div class="faq">
-          <details><summary>Можно прийти один раз, без абонемента?<i></i></summary><p class="a">Да. Разовое посещение — 750 ₽ с 7:00 до 21:00 или 600 ₽ с 11:00 до 16:00.</p></details>
-          <details><summary>Чем дневной абонемент отличается от безлимита?<i></i></summary><p class="a">Дневной действует с 11:00 до 16:00 и стоит дешевле: 3 800 ₽ за месяц вместо 4 500 ₽. Безлимит действует с 7:00 до 21:00.</p></details>
-          <details><summary>Можно заморозить абонемент или взять в рассрочку?<i></i></summary><p class="a">Абонемент на 3 месяца можно заморозить на 7 дней и оформить в рассрочку.</p></details>
-          <details><summary>Работаете ли вы с детьми?<i></i></summary><p class="a">Да, у нас есть тренеры, которые занимаются с детьми с 7 лет и с подростками. На странице тренеров выберите «Для ребёнка».</p></details>
-          <details><summary>Что взять с собой?<i></i></summary><p class="a">Форму и сменную обувь. Полотенца, шампунь и гель для душа есть в клубе.</p></details>
-          <details><summary>Вы работаете в воскресенье?<i></i></summary><p class="a">Воскресенье выходной. Пн–Пт с 7:00 до 22:00, суббота с 8:00 до 21:00.</p></details>
+          <details><summary>Можно прийти один раз, без абонемента?<i></i></summary><p class="a">Конечно. Разовое посещение стоит 750 ₽, приходите с 7:00 до 21:00. Днём, с 11:00 до 16:00, — 600 ₽.</p></details>
+          <details><summary>Чем дневной абонемент отличается от безлимита?<i></i></summary><p class="a">Временем и ценой. С дневным вы тренируетесь с 11:00 до 16:00, месяц стоит 3 800 ₽. С безлимитом — когда удобно, с 7:00 до 21:00, месяц стоит 4 500 ₽.</p></details>
+          <details><summary>Можно заморозить абонемент или взять в рассрочку?<i></i></summary><p class="a">Да, если берёте абонемент на 3 месяца: его можно заморозить на 7 дней и оплатить в рассрочку. Как оформить — подскажет администратор.</p></details>
+          <details><summary>Работаете ли вы с детьми?<i></i></summary><p class="a">Да. Несколько наших тренеров занимаются с детьми от 7 лет и с подростками. Чтобы их найти, на <a href="#/trenery">странице тренеров</a> выберите «Для ребёнка».</p></details>
+          <details><summary>Что взять с собой?<i></i></summary><p class="a">Спортивную форму и чистую сменную обувь. Полотенца, шампунь и гель для душа уже есть в клубе.</p></details>
+          <details><summary>Вы работаете в воскресенье?<i></i></summary><p class="a">В воскресенье у нас выходной. В будни ждём вас с 7:00 до 22:00, в субботу — с 8:00 до 21:00.</p></details>
         </div>
       </div>
     </section>
@@ -1758,13 +1760,14 @@ a.map-s:hover>img{transform:scale(1.03)}
       if(anchor&&document.getElementById(anchor))document.getElementById(anchor).scrollIntoView();else scrollTo(0,0);
       setTimeout(armRv,80);
     }
-    if(document.startViewTransition&&pages.some(function(p){return p.classList.contains('on')})){var vt=document.startViewTransition(swap);[vt.ready,vt.finished,vt.updateCallbackDone].forEach(function(pr){pr&&pr.catch(function(){})})}else swap();
+    if(document.startViewTransition&&pages.some(function(p){return p.classList.contains('on')})){swap()}else swap();
     closeMenu();
   }
   addEventListener('hashchange',route);route();
 
   function closeMenu(){var was=menu.classList.contains('on');menu.classList.remove('on');burger.setAttribute('aria-expanded','false');document.body.style.overflow='';if(was&&!lastPtr)burger.focus()}
-  $$('a',menu).forEach(function(a){a.addEventListener('click',closeMenu)});
+  // пункт меню: меню исчезает сразу, без затухания поверх новой страницы
+  $$('a',menu).forEach(function(a){a.addEventListener('click',function(){menu.classList.add('instant');closeMenu();setTimeout(function(){menu.classList.remove('instant')},60)})});
   document.addEventListener('focusin',function(e){if(menu.classList.contains('on')&&!menu.contains(e.target))$('#menu-x').focus()});
   menu.addEventListener('keydown',function(e){if(e.key!=='Tab'||!menu.classList.contains('on'))return;var fs=$$('a,button',menu),a=fs[0],z=fs[fs.length-1];
     if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}});
